@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | Smart Lost & Found</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+    * {
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: #831238;
+        --primary-dark: #690d2d;
+        --sidebar: #AD8055;
+        --background: #f4f5f7;
+        --white: #ffffff;
+        --text: #292929;
+        --muted: #737b8c;
+        --light-blue: #DDF3F8;
+        --border: #dce1e7;
+        --success: #218653;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Roboto', Arial, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    header {
+        background: var(--primary);
+        color: white;
+        padding: 22px 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        box-shadow: 0 2px 8px #00000018;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .logout {
+        background: white;
+        color: var(--primary);
+        padding: 10px 18px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s ease;
+    }
+
+    .logout:hover {
+        background: #f4eaf0;
+    }
+
+    .container {
+        width: min(1100px, 94%);
+        margin: 28px auto;
+        padding: 10px;
+    }
+
+    .welcome {
+        background: white;
+        padding: 25px;
+        border: 1px solid #e8e9ed;
+        border-radius: 5px;
+        box-shadow: 0 2px 7px #0000000d;
+        margin-bottom: 28px;
+    }
+
+    .welcome h2 {
+        margin-top: 0;
+        color: var(--primary);
+        font-size: 22px;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 18px;
+    }
+
+    .card {
+        background: white;
+        padding: 24px;
+        border: 1px solid #e8e9ed;
+        border-bottom: 3px solid var(--primary);
+        border-radius: 5px;
+        box-shadow: 0 2px 7px #0000000d;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 14px #00000012;
+    }
+
+    .card .icon {
+        font-size: 32px;
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+        color: var(--primary);
+        font-size: 17px;
+    }
+
+    .card p {
+        color: var(--muted);
+        line-height: 1.6;
+        min-height: 48px;
+    }
+
+    .card button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 11px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .card button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+    }
+
+    #activity {
+        background: white;
+        padding: 22px;
+        border: 1px solid #e8e9ed;
+        border-radius: 5px;
+        margin-top: 28px;
+        line-height: 1.8;
+        box-shadow: 0 2px 7px #0000000d;
+    }
+
+    #activity h2,
+    #activity h3 {
+        color: var(--primary);
+    }
+
+    footer {
+        text-align: center;
+        padding: 22px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+        header {
+            padding: 18px;
+        }
+
+        header h1 {
+            font-size: 21px;
+        }
+
+        .container {
+            width: 100%;
+            margin: 12px auto;
+            padding: 12px;
+        }
+
+        .welcome,
+        .card,
+        #activity {
+            padding: 17px;
+        }
+
+        .cards {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>Smart Campus Lost & Found</h1>
+        <p>Student Dashboard | Sathyabama</p>
+    </div>
+
+
+<a class="logout" href="login.html">Logout</a>
+
+
+</header>
+
+<div class="container">
+
+
+<section class="welcome">
+    <h2>Welcome, Student! 👋</h2>
+    <p>Lost something on campus? Found an item? Let's help reunite it with its owner.</p>
+</section>
+
+<section class="cards">
+
+    <div class="card">
+        <div class="icon">🔍</div>
+        <h3>Report Lost Item</h3>
+        <p>Report belongings that you have lost on campus.</p>
+        <button onclick="showActivity('lost')">Report Lost Item</button>
+    </div>
+
+    <div class="card">
+        <div class="icon">🎒</div>
+        <h3>Report Found Item</h3>
+        <p>Help someone recover an item you found.</p>
+        <button onclick="showActivity('found')">Report Found Item</button>
+    </div>
+
+    <div class="card">
+        <div class="icon">🔎</div>
+        <h3>Find My Item</h3>
+        <p>Check for possible matches for your missing belongings.</p>
+        <button onclick="showActivity('matches')">Check Matches</button>
+    </div>
+
+    <div class="card">
+        <div class="icon">📋</div>
+        <h3>My Reports</h3>
+        <p>View your submitted reports in this session.</p>
+        <button onclick="showActivity('reports')">View Reports</button>
+    </div>
+
+</section>
+
+<section id="activity">
+    <h3>Your Campus Activity</h3>
+    <p>Select an option above to get started.</p>
+</section>
+
+
+</div>
+
+<footer>
+    Smart Campus Lost & Found Management System
+</footer>
+
+<script>
+    function showActivity(type) {
+        const activity = document.getElementById("activity");
+
+        if (type === "lost") {
+            activity.innerHTML = `
+                <h3>🔍 Report a Lost Item</h3>
+                <p>Open the lost item reporting page to submit your details.</p>
+                <button onclick="window.location.href='index.html'">
+                    Open Reporting Page
+                </button>
+            `;
+        } else if (type === "found") {
+            activity.innerHTML = `
+                <h3>🎒 Report a Found Item</h3>
+                <p>Open the found item reporting page to submit your details.</p>
+                <button onclick="window.location.href='index.html'">
+                    Open Reporting Page
+                </button>
+            `;
+        } else if (type === "matches") {
+            activity.innerHTML = `
+                <h3>🔎 Possible Matches</h3>
+                <p>Select a lost item to find possible matching found items.</p>
+                <div id="matchesList">Loading lost items...</div>
+            `;
+            loadLostItemsForMatching();
+        } else if (type === "reports") {
+            loadMyReports();
+        }
+    }
+
+    async function loadLostItemsForMatching() {
+        const container = document.getElementById("matchesList");
+
+        try {
+            const response = await fetch("http://localhost:8080/api/items");
+
+            if (!response.ok) {
+                throw new Error("Unable to load items");
+            }
+
+            const items = await response.json();
+            const lostItems = items.filter(item => item.itemType === "LOST");
+
+            container.replaceChildren();
+
+            if (lostItems.length === 0) {
+                container.textContent = "No lost items available to match.";
+                return;
+            }
+
+            lostItems.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "recent-report-card";
+
+                const title = document.createElement("h3");
+                title.textContent = item.itemName || "Unnamed item";
+
+                const details = document.createElement("p");
+                details.textContent =
+                    "Category: " + (item.category || "Not specified") +
+                    " | Location: " + (item.location || "Not specified");
+
+                const button = document.createElement("button");
+                button.textContent = "Find Matches";
+                button.onclick = () => findMatchesForItem(item.id);
+
+                card.append(title, details, button);
+                container.appendChild(card);
+            });
+        } catch (error) {
+            container.textContent =
+                "Unable to load items. Please check whether the backend is running.";
+            console.error("Error loading items:", error);
+        }
+    }
+
+    async function findMatchesForItem(id) {
+        const container = document.getElementById("matchesList");
+        container.innerHTML = "<p>Searching for matches...</p>";
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/items/matches/${id}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to find matches");
+            }
+
+            const matches = await response.json();
+            container.replaceChildren();
+
+            const heading = document.createElement("h3");
+            heading.textContent = "Matching Found Items";
+            container.appendChild(heading);
+
+            if (!Array.isArray(matches) || matches.length === 0) {
+                const message = document.createElement("p");
+                message.textContent = "No possible matches found for this item.";
+                container.appendChild(message);
+                return;
+            }
+
+            matches.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "recent-report-card";
+
+                const title = document.createElement("h3");
+                title.textContent = item.itemName || "Unnamed item";
+
+                const details = document.createElement("p");
+                details.textContent =
+                    "Category: " + (item.category || "Not specified") +
+                    " | Location: " + (item.location || "Not specified");
+
+                const status = document.createElement("p");
+                status.textContent = "Status: " + (item.status || "Not specified");
+
+                card.append(title, details, status);
+                container.appendChild(card);
+            });
+        } catch (error) {
+            container.textContent =
+                "Unable to find matches. Please check the backend and matching API.";
+            console.error("Error finding matches:", error);
+        }
+    }
+
+    async function loadMyReports() {
+        const activity = document.getElementById("activity");
+
+        activity.innerHTML = `
+            <h3>📋 My Reports</h3>
+            <p>Loading reports...</p>
+        `;
+
+        try {
+            const response = await fetch("http://localhost:8080/api/items");
+
+            if (!response.ok) {
+                throw new Error("Unable to load reports");
+            }
+
+            const items = await response.json();
+
+            activity.innerHTML = `
+                <h3>📋 All Reports</h3>
+                <p>Reports retrieved from the database.</p>
+                <div id="myReportsList"></div>
+            `;
+
+            const list = document.getElementById("myReportsList");
+
+            if (!Array.isArray(items) || items.length === 0) {
+                list.textContent = "No reports have been submitted yet.";
+                return;
+            }
+
+            items.slice().sort((a, b) => b.id - a.id).forEach(item => {
+                const card = document.createElement("div");
+                card.className = "recent-report-card";
+
+                const title = document.createElement("h3");
+                title.textContent = item.itemName || "Unnamed item";
+
+                const typeLabel = document.createElement("p");
+                typeLabel.textContent =
+                    "Type: " + (item.itemType || "Not specified");
+
+                const category = document.createElement("p");
+                category.textContent =
+                    "Category: " + (item.category || "Not specified");
+
+                const location = document.createElement("p");
+                location.textContent =
+                    "Location: " + (item.location || "Not specified");
+
+                const status = document.createElement("p");
+                status.textContent =
+                    "Status: " + (item.status || "Not specified");
+
+                card.append(title, typeLabel, category, location, status);
+                list.appendChild(card);
+            });
+        } catch (error) {
+            activity.innerHTML = `
+                <h3>📋 My Reports</h3>
+                <p>Unable to load reports. Please check whether the backend is running.</p>
+            `;
+            console.error("Error loading reports:", error);
+        }
+    }
+</script>
+
+<section id="dashboardSummary">
+    <h2>Dashboard Summary</h2>
+
+
+<div class="summary-cards">
+    <div class="summary-card">
+        <h3>Total Lost Items</h3>
+        <p id="lostCount">Loading...</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>Total Found Items</h3>
+        <p id="foundCount">Loading...</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>Total Reports</h3>
+        <p id="totalCount">Loading...</p>
+    </div>
+</div>
+
+<p id="dashboardMessage" aria-live="polite"></p>
+
+
+</section>
+
+<style>
+    #dashboardSummary {
+        margin: 28px 0;
+    }
+
+    #dashboardSummary h2,
+    #recentReports h2 {
+        color: #831238;
+        font-family: 'Roboto', Arial, sans-serif;
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin: 20px 0;
+    }
+
+    .summary-card {
+        padding: 24px;
+        border: 1px solid #e8e9ed;
+        border-bottom: 3px solid #831238;
+        border-radius: 5px;
+        text-align: center;
+        background: #DDF3F8;
+        box-shadow: 0 2px 7px #0000000d;
+    }
+
+    .summary-card h3 {
+        font-family: 'Roboto', Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #831238;
+        margin-bottom: 12px;
+    }
+
+    .summary-card p {
+        font-family: 'Roboto', Arial, sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #292929;
+        margin: 8px 0;
+    }
+
+    #dashboardMessage {
+        color: #737b8c;
+        font-size: 13px;
+    }
+
+    #recentReports {
+        margin: 30px 0;
+        padding: 20px;
+        background: #ffffff;
+        border: 1px solid #e8e9ed;
+        border-radius: 5px;
+        box-shadow: 0 2px 7px #0000000d;
+    }
+
+    #recentReportsList {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .recent-report-card {
+        padding: 18px;
+        border-radius: 5px;
+        border: 1px solid #dce1e7;
+        border-left: 4px solid #831238;
+        background: #ffffff;
+        box-shadow: 0 2px 6px #0000000b;
+        overflow-wrap: anywhere;
+    }
+
+    .recent-report-card h3 {
+        margin-top: 0;
+        color: #831238;
+        font-size: 16px;
+    }
+
+    .recent-report-card p {
+        margin: 8px 0;
+        color: #4f5662;
+        overflow-wrap: anywhere;
+    }
+
+    .recent-report-type {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        background: #DDF3F8;
+        color: #831238;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+        #recentReports {
+            padding: 15px;
+        }
+
+        .summary-card {
+            padding: 18px;
+        }
+    }
+</style>
+
+<script>
+async function loadDashboardSummary() {
+    const message = document.getElementById("dashboardMessage");
+
+    try {
+        const response = await fetch("http://localhost:8080/api/items");
+
+        if (!response.ok) {
+            throw new Error("Unable to load reports");
+        }
+
+        const items = await response.json();
+
+        const lostItems = items.filter(
+            item => item.itemType === "LOST"
+        );
+
+        const foundItems = items.filter(
+            item => item.itemType === "FOUND"
+        );
+
+        document.getElementById("lostCount").textContent =
+            lostItems.length;
+
+        document.getElementById("foundCount").textContent =
+            foundItems.length;
+
+        document.getElementById("totalCount").textContent =
+            items.length;
+
+        message.textContent = "";
+    } catch (error) {
+        message.textContent =
+            "Could not load dashboard data. Please check whether the backend is running.";
+
+        console.error(error);
+    }
+}
+
+loadDashboardSummary();
+</script>
+
+<section id="recentReports">
+    <h2>Recent Reports</h2>
+    <p>Latest lost and found items reported on campus.</p>
+
+    <div id="recentReportsList">
+        Loading recent reports...
+    </div>
+</section>
+
+
+
+<script>
+async function loadRecentReports() {
+    const container = document.getElementById("recentReportsList");
+
+    try {
+        const response = await fetch("http://localhost:8080/api/items");
+
+        if (!response.ok) {
+            throw new Error("Unable to load reports");
+        }
+
+        const items = await response.json();
+
+        // Show the latest reports first, using the highest ID.
+        const recentItems = [...items]
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 5);
+
+        container.replaceChildren();
+
+        if (recentItems.length === 0) {
+            container.textContent = "No reports have been submitted yet.";
+            return;
+        }
+
+        recentItems.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "recent-report-card";
+
+            const title = document.createElement("h3");
+            title.textContent = item.itemName || "Unnamed item";
+
+            const type = document.createElement("span");
+            type.className = "recent-report-type";
+            type.textContent = item.itemType || "UNKNOWN";
+
+            const category = document.createElement("p");
+            category.textContent = "Category: " + (item.category || "Not specified");
+
+            const location = document.createElement("p");
+            location.textContent = "Location: " + (item.location || "Not specified");
+
+            const status = document.createElement("p");
+            status.textContent = "Status: " + (item.status || "Not specified");
+
+            card.append(title, type, category, location, status);
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+        container.textContent =
+            "Could not load recent reports. Please check whether the backend is running.";
+        console.error(error);
+    }
+}
+
+loadRecentReports();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Smart Lost & Found</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f6fa;
+            color: #263238;
+        }
+
+        header {
+            background: #831238;
+            color: white;
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h1 { font-size: 24px; }
+        header p { margin-top: 6px; font-size: 14px; }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 13px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover { opacity: 0.86; }
+
+        .logout {
+            background: white;
+            color: #831238;
+            padding: 10px 17px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: 30px auto;
+        }
+
+        .welcome { margin-bottom: 25px; }
+        .welcome h2 { color: #831238; margin-bottom: 8px; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            border-left: 5px solid #831238;
+        }
+
+        .card p { color: #666; margin-bottom: 12px; }
+        .card h3 { font-size: 30px; color: #831238; }
+
+        .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .panel h2 { color: #831238; margin-bottom: 20px; }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        input, select, textarea {
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        #search { flex: 1; min-width: 190px; width: auto; }
+        .filters select { width: auto; }
+
+        .table-wrap { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        th { background: #f9edf1; color: #831238; }
+        td { font-size: 14px; }
+
+        .status-select { max-width: 130px; }
+
+        .update-btn, .edit-btn {
+            background: #831238;
+            color: white;
+            margin: 2px;
+        }
+
+        .delete-btn {
+            background: #c62828;
+            color: white;
+            margin: 2px;
+        }
+
+        #notice { margin-bottom: 15px; font-size: 14px; }
+        .error { color: #c62828; }
+        .success { color: #187443; }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0,0,0,0.55);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            margin: 35px auto;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .modal-content h2 {
+            color: #831238;
+            margin-bottom: 20px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .save-btn {
+            background: #831238;
+            color: white;
+            margin-right: 8px;
+        }
+
+        .cancel-btn {
+            background: #ddd;
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 20px; }
+            .panel { padding: 15px; }
+            .container { width: 94%; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>🔎 Smart Lost & Found</h1>
+        <p>Administrator Dashboard</p>
+    </div>
+    <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <h2>Welcome, Admin!</h2>
+        <p>Manage lost and found reports from one place.</p>
+    </section>
+
+    <section class="stats">
+        <div class="card">
+            <p>Total Reports</p>
+            <h3 id="totalCount">0</h3>
+        </div>
+        <div class="card">
+            <p>Lost Items</p>
+            <h3 id="lostCount">0</h3>
+        </div>
+        <div class="card">
+            <p>Found Items</p>
+            <h3 id="foundCount">0</h3>
+        </div>
+        <div class="card">
+            <p>Resolved Reports</p>
+            <h3 id="resolvedCount">0</h3>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>📋 Manage Item Reports</h2>
+
+        <p id="notice">Loading reports...</p>
+
+        <div class="filters">
+            <input type="text" id="search"
+                   placeholder="Search item, location or description...">
+
+            <select id="typeFilter">
+                <option value="all">All Types</option>
+                <option value="lost">Lost Items</option>
+                <option value="found">Found Items</option>
+            </select>
+
+            <select id="statusFilter">
+                <option value="all">All Statuses</option>
+                <option value="OPEN">Open</option>
+                <option value="RESOLVED">Resolved</option>
+            </select>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="itemsTable">
+                    <tr>
+                        <td colspan="8" class="empty">Loading items...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<!-- Edit Item Modal -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h2>✏️ Edit Item Report</h2>
+
+        <form id="editForm">
+            <input type="hidden" id="editId">
+
+            <div class="form-group">
+                <label for="editName">Item Name</label>
+                <input id="editName" required maxlength="150">
+            </div>
+
+            <div class="form-group">
+                <label for="editCategory">Category</label>
+                <input id="editCategory" maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="editLocation">Location</label>
+                <input id="editLocation" required maxlength="200">
+            </div>
+
+            <div class="form-group">
+                <label for="editDescription">Description</label>
+                <textarea id="editDescription" rows="4" maxlength="1000"></textarea>
+            </div>
+
+            <button class="save-btn" type="submit">Save Changes</button>
+            <button class="cancel-btn" type="button" onclick="closeEditModal()">
+                Cancel
+            </button>
+        </form>
+    </div>
+</div>
+
+<footer>
+    Smart Lost & Found Matcher | Admin Panel
+</footer>
+
+<script>
+    const API_URL = "http://localhost:8080/api/items";
+
+    let allItems = [];
+
+    function showNotice(message, type = "") {
+        const notice = document.getElementById("notice");
+        notice.textContent = message;
+        notice.className = type;
+    }
+
+    function getItemType(item) {
+        return String(item.itemType || item.type || "").toLowerCase();
+    }
+
+    function getItemStatus(item) {
+        return String(item.status || "OPEN").toUpperCase();
+    }
+
+    function isResolved(item) {
+        return ["RESOLVED", "RETURNED", "CLOSED", "COMPLETED"]
+            .includes(getItemStatus(item));
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function updateStatistics() {
+        document.getElementById("totalCount").textContent = allItems.length;
+
+        document.getElementById("lostCount").textContent =
+            allItems.filter(item => getItemType(item) === "lost").length;
+
+        document.getElementById("foundCount").textContent =
+            allItems.filter(item => getItemType(item) === "found").length;
+
+        document.getElementById("resolvedCount").textContent =
+            allItems.filter(isResolved).length;
+    }
+
+    async function loadItems() {
+        showNotice("Loading reports...");
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error("Server returned status " + response.status);
+            }
+
+            const data = await response.json();
+
+            allItems = Array.isArray(data)
+                ? data
+                : (data.content || data.items || []);
+
+            updateStatistics();
+            renderItems();
+            showNotice("Reports loaded successfully.", "success");
+
+        } catch (error) {
+            showNotice(
+                "Unable to load reports. Check whether Spring Boot is running on port 8080.",
+                "error"
+            );
+
+            document.getElementById("itemsTable").innerHTML =
+                '<tr><td colspan="8" class="empty">Could not load reports.</td></tr>';
+
+            console.error(error);
+        }
+    }
+
+    function renderItems() {
+        const search = document.getElementById("search").value.toLowerCase();
+        const typeFilter = document.getElementById("typeFilter").value;
+        const statusFilter = document.getElementById("statusFilter").value;
+
+        const filteredItems = allItems.filter(item => {
+            const name = String(item.itemName || item.name || "").toLowerCase();
+            const location = String(item.location || "").toLowerCase();
+            const description = String(item.description || "").toLowerCase();
+            const type = getItemType(item);
+            const status = getItemStatus(item);
+
+            const matchesSearch =
+                name.includes(search) ||
+                location.includes(search) ||
+                description.includes(search);
+
+            const matchesType =
+                typeFilter === "all" || type === typeFilter;
+
+            const matchesStatus =
+                statusFilter === "all" ||
+                (statusFilter === "RESOLVED" && isResolved(item)) ||
+                (statusFilter === "OPEN" && !isResolved(item));
+
+            return matchesSearch && matchesType && matchesStatus;
+        });
+
+        const table = document.getElementById("itemsTable");
+
+        if (filteredItems.length === 0) {
+            table.innerHTML =
+                '<tr><td colspan="8" class="empty">No matching reports found.</td></tr>';
+            return;
+        }
+
+        table.innerHTML = filteredItems.map(item => {
+            const id = Number(item.id);
+            const name = escapeHTML(item.itemName || item.name || "Unnamed item");
+            const type = escapeHTML(getItemType(item) || "Unknown");
+            const category = escapeHTML(item.category || "Not provided");
+            const location = escapeHTML(item.location || "Not provided");
+            const date = escapeHTML(item.date || item.createdAt || "Not provided");
+            const status = getItemStatus(item);
+
+            const options = ["OPEN", "RESOLVED"]
+                .map(value =>
+                    `<option value="${value}" ${status === value ? "selected" : ""}>${value}</option>`
+                ).join("");
+
+            return `
+                <tr>
+                    <td>${escapeHTML(item.id)}</td>
+                    <td>${name}</td>
+                    <td>${type}</td>
+                    <td>${category}</td>
+                    <td>${location}</td>
+                    <td>${date}</td>
+                    <td>
+                        <select class="status-select" id="status-${id}">
+                            ${options}
+                        </select>
+                        <button class="update-btn" onclick="updateStatus(${id})">
+                            Update
+                        </button>
+                    </td>
+                    <td>
+                        <button class="edit-btn" onclick="openEditModal(${id})">
+                            Edit
+                        </button>
+                        <button class="delete-btn" onclick="deleteItem(${id})">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function openEditModal(id) {
+        const item = allItems.find(entry => Number(entry.id) === id);
+
+        if (!item) {
+            showNotice("Item not found.", "error");
+            return;
+        }
+
+        document.getElementById("editId").value = item.id;
+        document.getElementById("editName").value = item.itemName || item.name || "";
+        document.getElementById("editCategory").value = item.category || "";
+        document.getElementById("editLocation").value = item.location || "";
+        document.getElementById("editDescription").value = item.description || "";
+
+        document.getElementById("editModal").style.display = "block";
+    }
+
+    function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    document.getElementById("editForm").addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const id = document.getElementById("editId").value;
+
+        const updatedItem = {
+            itemName: document.getElementById("editName").value.trim(),
+            category: document.getElementById("editCategory").value.trim(),
+            location: document.getElementById("editLocation").value.trim(),
+            description: document.getElementById("editDescription").value.trim()
+        };
+
+        if (!updatedItem.itemName || !updatedItem.location) {
+            showNotice("Item name and location are required.", "error");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedItem)
+            });
+
+            if (!response.ok) {
+                throw new Error("Edit failed with status " + response.status);
+            }
+
+            closeEditModal();
+            showNotice("Item #" + id + " updated successfully.", "success");
+            await loadItems();
+
+        } catch (error) {
+            showNotice("Could not edit item. Check the backend and ItemController.", "error");
+            console.error(error);
+        }
+    });
+
+    async function deleteItem(id) {
+        const item = allItems.find(entry => Number(entry.id) === id);
+        if (!item) return;
+
+        const name = item.itemName || item.name || "this item";
+
+        if (!confirm(`Are you sure you want to permanently delete "${name}" (ID: ${id})?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                throw new Error("Delete failed with status " + response.status);
+            }
+
+            showNotice("Item #" + id + " deleted successfully.", "success");
+            await loadItems();
+
+        } catch (error) {
+            showNotice("Could not delete item. Check the backend and ItemController.", "error");
+            console.error(error);
+        }
+    }
+
+    async function updateStatus(id) {
+        const select = document.getElementById("status-" + id);
+        if (!select) return;
+
+        try {
+            const response = await fetch(
+                `${API_URL}/${id}/status?status=${encodeURIComponent(select.value)}`,
+                { method: "PUT" }
+            );
+
+            if (!response.ok) {
+                throw new Error("Status update failed with status " + response.status);
+            }
+
+            showNotice("Item #" + id + " status updated.", "success");
+            await loadItems();
+
+        } catch (error) {
+            showNotice("Could not update status. Check the backend API.", "error");
+            console.error(error);
+        }
+    }
+
+    document.getElementById("search").addEventListener("input", renderItems);
+    document.getElementById("typeFilter").addEventListener("change", renderItems);
+    document.getElementById("statusFilter").addEventListener("change", renderItems);
+
+    document.getElementById("editModal").addEventListener("click", event => {
+        if (event.target.id === "editModal") closeEditModal();
+    });
+
+    function logout() {
+        window.location.href = "login.html";
+    }
+
+    loadItems();
+</script>
+
+</body>
+</html>
+
